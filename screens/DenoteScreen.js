@@ -75,6 +75,7 @@ export default function CashInHand() {
             <TextInput
               mode="outlined"
               keyboardType="numeric"
+              textColor="black"
               style={styles.input}
               label={denom}
               onChangeText={(value) => handleInputChange(value, denom)}

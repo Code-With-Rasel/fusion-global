@@ -113,6 +113,7 @@ const Home = () => {
       <TextInput
         mode="outlined"
         label="Note"
+        textColor="black"
         value={inputs.note}
         onChangeText={(value) => handleInputChange("note", value)}
         style={{ marginVertical: 10, backgroundColor: "white" }}
@@ -123,7 +124,7 @@ const Home = () => {
 
       <Button
         mode="contained"
-        style={{ backgroundColor: "orange" }}
+        style={{ backgroundColor: "orange", color: "red" }}
         onPress={handleCalculate}
         icon={"send"}
       ></Button>
@@ -135,6 +136,7 @@ const CustomInput = ({ label, value, onChange }) => (
   <TextInput
     mode="outlined"
     keyboardType="numeric"
+    textColor="black"
     label={label}
     value={value}
     onChangeText={onChange}
