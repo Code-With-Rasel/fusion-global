@@ -21,7 +21,6 @@ function MyDrawer() {
       <Drawer.Screen name="Denote" component={DenoteScreen} />
       <Drawer.Screen name="Bank List" component={BankListScreen} />
       <Drawer.Screen name="About" component={AboutScreen} />
-      {/* <Text>rasel</Text> */}
     </Drawer.Navigator>
   );
 }

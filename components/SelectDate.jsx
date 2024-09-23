@@ -13,6 +13,7 @@ const SelectDate = ({ getDate }) => {
       label="Date"
       mode="outlined"
       keyboardType="numeric"
+      style={{ backgroundColor: "white" }}
       value={selectDate}
       onChangeText={setSelectDate}
     />

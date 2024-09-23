@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginHorizontal: 5,
     fontSize: 20,
+    backgroundColor: "white",
   },
   denomTotal: {
     flex: 1,

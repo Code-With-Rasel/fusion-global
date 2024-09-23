@@ -41,7 +41,9 @@ const Home = () => {
 
   const handleCalculate = () => {
     if (Object.values(inputs).some((val) => !val.trim())) {
-      return Alert.alert("Error", "Please fill all fields with 0 or more");
+      return Alert.alert("😊", "দয়া করে, সব ফিল্ডে শূন্য বা সঠিক সংখ্যা দিন।", [
+        { text: "ঠিক আছে", style: "cancel" },
+      ]);
     }
 
     const total = calculateTotal();
@@ -56,15 +58,17 @@ const Home = () => {
     }*\nReturn: *${inputs.returnVal}*\nNB: *${inputs.note}*`;
 
     Alert.alert(
-      total < 0 ? "Excess Money" : total > 0 ? "Due Money" : "No Due",
+      total < 0 ? "টাকা বেশি আছে!!" : total > 0 ? "টাকা কম আছে!!" : "ধন্যবাদ",
       total > 0
-        ? `Check your account, you have a due of ${total}.`
+        ? `আপনার হিসাব চেক করুন, আপনার ${total} কম আছে।`
         : total < 0
-        ? `Check your account, you have an excess of ${Math.abs(total)}.`
-        : "Thank you!",
+        ? `আপনার হিসাব চেক করুন, আপনার ${Math.abs(total)} টাকা বেশি আছে। `
+        : "Thank you!"
+        ? `আপনার কোন ডিউ/এডভান্স নেই😍 `
+        : "ধন্যবাদ!",
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Send", onPress: () => openWhatsApp(message) },
+        { text: "পাঠাবো না❌", style: "cancel" },
+        { text: "পাঠাবো✅", onPress: () => openWhatsApp(message) },
       ]
     );
   };
@@ -111,13 +115,18 @@ const Home = () => {
         label="Note"
         value={inputs.note}
         onChangeText={(value) => handleInputChange("note", value)}
-        style={{ marginVertical: 10 }}
+        style={{ marginVertical: 10, backgroundColor: "white" }}
       />
       <Text variant="headlineSmall" style={styles.resultText}>{`${
         total > 0 ? "Due" : total < 0 ? "Advance" : "😊"
       } ${Math.abs(total)}`}</Text>
 
-      <Button mode="contained" onPress={handleCalculate} icon={"send"}></Button>
+      <Button
+        mode="contained"
+        style={{ backgroundColor: "orange" }}
+        onPress={handleCalculate}
+        icon={"send"}
+      ></Button>
     </ScrollView>
   );
 };
@@ -135,9 +144,14 @@ const CustomInput = ({ label, value, onChange }) => (
 
 const styles = StyleSheet.create({
   container: { padding: 15 },
-  headerText: { textAlign: "center", marginVertical: 10 },
+  headerText: {
+    textAlign: "center",
+    marginVertical: 10,
+    color: "orangered",
+    fontWeight: "bold",
+  },
   inputContainer: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
-  box: { width: "48%" },
+  box: { width: "48%", backgroundColor: "white" },
   resultText: {
     textAlign: "center",
     color: "red",
@@ -146,6 +160,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     padding: 13,
     borderRadius: 10,
+    backgroundColor: "white",
   },
   send: {
     fontSize: 50,
