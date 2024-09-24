@@ -47,15 +47,19 @@ const Home = () => {
     }
 
     const total = calculateTotal();
-    const message = `Date: *${inputs.date}*\nDSO: *${inputs.dso}*\nLifting: *${
-      inputs.lifting
-    }*\nCash Lifting: *${inputs.cashLifting}*\nTotal Lifting: *${
-      +inputs.lifting + +inputs.cashLifting
-    }*\nBank: *${inputs.bank}*\nCRM: *${inputs.crm}*\nCash: *${
-      inputs.cash
-    }*\nPre_Due: *${inputs.preDue}*\nCash Support: *${
-      inputs.cashSupport
-    }*\nReturn: *${inputs.returnVal}*\nNB: *${inputs.note}*`;
+    const message = `Date:- *${inputs.date}*\nDSO:- *${
+      inputs.dso
+    }*\nLifting:- *${inputs.lifting}*\nCash Lifting:- *${
+      inputs.cashLifting
+    }*\nTotal Lifting:- *${+inputs.lifting + +inputs.cashLifting}*\nBank:- *${
+      inputs.bank
+    }*\nCRM:- *${inputs.crm}*\nCash:- *${inputs.cash}*\nPre_Due:- *${
+      inputs.preDue
+    }*\nCash Support:- *${inputs.cashSupport}*\nReturn:- *${
+      inputs.returnVal
+    }*\n${calculateTotal() > 50 ? "Due" : "Adv"}:*${calculateTotal()}*\nNB:- *${
+      inputs.note
+    }*`;
 
     Alert.alert(
       total < 0 ? "টাকা বেশি আছে!!" : total > 0 ? "টাকা কম আছে!!" : "ধন্যবাদ",
@@ -85,7 +89,7 @@ const Home = () => {
   return (
     <ScrollView style={styles.container}>
       <Text variant="titleLarge" style={styles.headerText}>
-        FUSION GLOBAL LIMITED
+        Fusion Global Limited
       </Text>
       <SelectDate getDate={(date) => handleInputChange("date", date)} />
       <SelectDso getDso={(dso) => handleInputChange("dso", dso)} />
@@ -116,7 +120,7 @@ const Home = () => {
         textColor="black"
         value={inputs.note}
         onChangeText={(value) => handleInputChange("note", value)}
-        style={{ marginVertical: 10, backgroundColor: "white" }}
+        style={{ marginVertical: 8, backgroundColor: "white" }}
       />
       <Text variant="headlineSmall" style={styles.resultText}>{`${
         total > 0 ? "Due" : total < 0 ? "Advance" : "😊"
@@ -124,7 +128,12 @@ const Home = () => {
 
       <Button
         mode="contained"
-        style={{ backgroundColor: "orange", color: "red" }}
+        style={{
+          backgroundColor: "orange",
+          color: "red",
+          paddingVertical: 5,
+          marginTop: 5,
+        }}
         onPress={handleCalculate}
         icon={"send"}
       ></Button>
@@ -145,10 +154,10 @@ const CustomInput = ({ label, value, onChange }) => (
 );
 
 const styles = StyleSheet.create({
-  container: { padding: 15 },
+  container: { padding: 10 },
   headerText: {
     textAlign: "center",
-    marginVertical: 10,
+    marginBottom: 10,
     color: "orangered",
     fontWeight: "bold",
   },
@@ -157,15 +166,12 @@ const styles = StyleSheet.create({
   resultText: {
     textAlign: "center",
     color: "red",
-    marginVertical: 15,
+    marginVertical: 5,
     borderWidth: 0.5,
     borderColor: "gray",
-    padding: 13,
+    padding: 20,
     borderRadius: 10,
     backgroundColor: "white",
-  },
-  send: {
-    fontSize: 50,
   },
 });
 

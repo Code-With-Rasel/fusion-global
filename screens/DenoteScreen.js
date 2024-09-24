@@ -66,26 +66,28 @@ export default function CashInHand() {
         <Divider style={styles.divider} />
 
         {/* Table Rows */}
-        {Object.keys(denominations).map((denom) => (
-          <View key={denom} style={styles.tableRow}>
-            <Image
-              source={denominationImages[denom]}
-              style={styles.noteImage}
-            />
-            <TextInput
-              mode="outlined"
-              keyboardType="numeric"
-              textColor="black"
-              style={styles.input}
-              label={denom}
-              onChangeText={(value) => handleInputChange(value, denom)}
-              value={denominations[denom].toString()}
-            />
-            <Text style={styles.denomTotal}>
-              {calculateDenominationTotal(denom)}
-            </Text>
-          </View>
-        ))}
+        {Object.keys(denominations)
+          .sort((a, b) => b - a)
+          .map((denom) => (
+            <View key={denom} style={styles.tableRow}>
+              <Image
+                source={denominationImages[denom]}
+                style={styles.noteImage}
+              />
+              <TextInput
+                mode="outlined"
+                keyboardType="numeric"
+                textColor="black"
+                style={styles.input}
+                label={denom}
+                onChangeText={(value) => handleInputChange(value, denom)}
+                value={denominations[denom].toString()}
+              />
+              <Text style={styles.denomTotal}>
+                {calculateDenominationTotal(denom)}
+              </Text>
+            </View>
+          ))}
       </View>
 
       {/* Total Footer */}
