@@ -40,10 +40,22 @@ const Home = () => {
   };
 
   const handleCalculate = () => {
-    if (Object.values(inputs).some((val) => !val.trim())) {
+    const { note, cashSupport, ...requiredFields } = inputs;
+
+    // Check if any required fields (except "note" and "cashSupport") are empty
+    if (Object.values(requiredFields).some((val) => !val.trim())) {
       return Alert.alert("😊", "দয়া করে, সব ফিল্ডে শূন্য বা সঠিক সংখ্যা দিন।", [
         { text: "ঠিক আছে", style: "cancel" },
       ]);
+    }
+
+    // If cashSupport is greater than 0, validate the note field
+    if (cashSupport > 0 && !note.trim()) {
+      return Alert.alert(
+        "😊",
+        "Cash Support গ্রহীতার নাম Note এ উল্লেখ করুন ।",
+        [{ text: "ঠিক আছে", style: "cancel" }]
+      );
     }
 
     const total = calculateTotal();
@@ -67,9 +79,7 @@ const Home = () => {
         ? `আপনার হিসাব চেক করুন, আপনার ${total} কম আছে।`
         : total < 0
         ? `আপনার হিসাব চেক করুন, আপনার ${Math.abs(total)} টাকা বেশি আছে। `
-        : "Thank you!"
-        ? `আপনার কোন ডিউ/এডভান্স নেই😍 `
-        : "ধন্যবাদ!",
+        : "Thank you!",
       [
         { text: "পাঠাবো না❌", style: "cancel" },
         { text: "পাঠাবো✅", onPress: () => openWhatsApp(message) },
