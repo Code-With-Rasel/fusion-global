@@ -96,7 +96,7 @@ const BankDataList = () => {
     {
       bankName: "Shahjalal Islami Bank Ltd.",
       branchName: "Gulshan Branch, Dhaka",
-      accountNumber: "4057-13100000020",
+      accountNumber: "405713100000020",
       accountsTitle: "Nagad LTD. Trust Cum Settlement Account (TCSA)",
     },
     {
@@ -108,13 +108,19 @@ const BankDataList = () => {
     {
       bankName: "United Commercial Bank Ltd.",
       branchName: "Banani, Dhaka",
-      accountNumber: "09013100000436",
+      accountNumber: "0901301000000436",
       accountsTitle: "Nagad LTD. Trust Cum Settlement Account (TCSA)",
     },
     {
       bankName: "IFIC",
       branchName: "Gulshan Branch, Dhaka",
-      accountNumber: "019014654041",
+      accountNumber: "0190146504041",
+      accountsTitle: "Nagad LTD. Trust Cum Settlement Account (TCSA)",
+    },
+    {
+      bankName: "First Security Islami Bank",
+      branchName: "Gulshan Branch",
+      accountNumber: "13100000637",
       accountsTitle: "Nagad LTD. Trust Cum Settlement Account (TCSA)",
     },
 
