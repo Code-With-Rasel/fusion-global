@@ -42,8 +42,7 @@ const About = () => (
                 fontStyle: "italic",
               }}
             >
-              {`Asaduzzaman Asad 
-Manager`}
+              {`Asaduzzaman Asad`}
             </Text>
           </View>
           <View>
@@ -65,8 +64,7 @@ Manager`}
                 fontStyle: "italic",
               }}
             >
-              {`Sharif Hasan
-  MC`}
+              {`Sharif Hasan`}
             </Text>
           </View>
         </View>

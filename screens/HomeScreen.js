@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { View, Alert, Linking, StyleSheet, ScrollView } from "react-native";
 import { Button, TextInput, Text } from "react-native-paper";
 import SelectDso from "../components/SelectDso";
@@ -18,6 +18,17 @@ const Home = () => {
     date: "",
     dso: "",
   });
+
+  // Create refs for each input
+  const liftingRef = useRef();
+  const cashLiftingRef = useRef();
+  const bankRef = useRef();
+  const crmRef = useRef();
+  const cashRef = useRef();
+  const preDueRef = useRef();
+  const cashSupportRef = useRef();
+  const returnValRef = useRef();
+  const noteRef = useRef();
 
   const handleInputChange = (name, value) => {
     setInputs((prev) => ({ ...prev, [name]: value }));
@@ -42,14 +53,12 @@ const Home = () => {
   const handleCalculate = () => {
     const { note, cashSupport, ...requiredFields } = inputs;
 
-    // Check if any required fields (except "note" and "cashSupport") are empty
     if (Object.values(requiredFields).some((val) => !val.trim())) {
       return Alert.alert("😊", "দয়া করে, সব ফিল্ডে শূন্য বা সঠিক সংখ্যা দিন।", [
         { text: "ঠিক আছে", style: "cancel" },
       ]);
     }
 
-    // If cashSupport is greater than 0, validate the note field
     if (cashSupport > 0 && !note.trim()) {
       return Alert.alert(
         "😊",
@@ -78,8 +87,8 @@ const Home = () => {
       total > 0
         ? `আপনার হিসাব চেক করুন, আপনার ${total} কম আছে।`
         : total < 0
-        ? `আপনার হিসাব চেক করুন, আপনার ${Math.abs(total)} টাকা বেশি আছে। `
-        : "Thank you!",
+        ? `আপনার হিসাব চেক করুন, আপনার ${Math.abs(total)} টাকা বেশি আছে।`
+        : "আপনার কোন ডিউ/এডভান্স নেই😊",
       [
         { text: "পাঠাবো না❌", style: "cancel" },
         { text: "পাঠাবো✅", onPress: () => openWhatsApp(message) },
@@ -105,36 +114,89 @@ const Home = () => {
       <SelectDso getDso={(dso) => handleInputChange("dso", dso)} />
 
       <View style={styles.inputContainer}>
-        {[
-          "lifting",
-          "cashLifting",
-          "bank",
-          "crm",
-          "cash",
-          "preDue",
-          "cashSupport",
-          "returnVal",
-        ].map((label) => (
-          <CustomInput
-            key={label}
-            label={label.charAt(0).toUpperCase() + label.slice(1)}
-            value={inputs[label]}
-            onChange={(value) => handleInputChange(label, value)}
-          />
-        ))}
+        <CustomInput
+          ref={liftingRef}
+          label="Lifting"
+          value={inputs.lifting}
+          onChange={(value) => handleInputChange("lifting", value)}
+          onSubmitEditing={() => cashLiftingRef.current.focus()}
+          returnKeyType="next"
+        />
+        <CustomInput
+          ref={cashLiftingRef}
+          label="Cash Lifting"
+          value={inputs.cashLifting}
+          onChange={(value) => handleInputChange("cashLifting", value)}
+          onSubmitEditing={() => bankRef.current.focus()}
+          returnKeyType="next"
+        />
+        <CustomInput
+          ref={bankRef}
+          label="Bank"
+          value={inputs.bank}
+          onChange={(value) => handleInputChange("bank", value)}
+          onSubmitEditing={() => crmRef.current.focus()}
+          returnKeyType="next"
+        />
+        <CustomInput
+          ref={crmRef}
+          label="CRM"
+          value={inputs.crm}
+          onChange={(value) => handleInputChange("crm", value)}
+          onSubmitEditing={() => cashRef.current.focus()}
+          returnKeyType="next"
+        />
+        <CustomInput
+          ref={cashRef}
+          label="Cash"
+          value={inputs.cash}
+          onChange={(value) => handleInputChange("cash", value)}
+          onSubmitEditing={() => preDueRef.current.focus()}
+          returnKeyType="next"
+        />
+        <CustomInput
+          ref={preDueRef}
+          label="Pre Due"
+          value={inputs.preDue}
+          onChange={(value) => handleInputChange("preDue", value)}
+          onSubmitEditing={() => cashSupportRef.current.focus()}
+          returnKeyType="next"
+        />
+        <CustomInput
+          ref={cashSupportRef}
+          label="Cash Support"
+          value={inputs.cashSupport}
+          onChange={(value) => handleInputChange("cashSupport", value)}
+          onSubmitEditing={() => returnValRef.current.focus()}
+          returnKeyType="next"
+        />
+        <CustomInput
+          ref={returnValRef}
+          label="Return"
+          value={inputs.returnVal}
+          onChange={(value) => handleInputChange("returnVal", value)}
+          onSubmitEditing={() => noteRef.current.focus()}
+          returnKeyType="next"
+        />
       </View>
 
       <TextInput
+        ref={noteRef}
         mode="outlined"
         label="Note"
         textColor="black"
         value={inputs.note}
         onChangeText={(value) => handleInputChange("note", value)}
+        returnKeyType="done"
         style={{ marginVertical: 8, backgroundColor: "white" }}
       />
-      <Text variant="headlineSmall" style={styles.resultText}>{`${
-        total > 0 ? "Due" : total < 0 ? "Advance" : "😊"
-      } ${Math.abs(total)}`}</Text>
+      <Text variant="headlineSmall" style={styles.resultText}>
+        {total > 0
+          ? `Due ${Math.abs(total)}`
+          : total < 0
+          ? `Advance ${Math.abs(total)}`
+          : "😊"}
+      </Text>
 
       <Button
         mode="contained"
@@ -151,16 +213,21 @@ const Home = () => {
   );
 };
 
-const CustomInput = ({ label, value, onChange }) => (
-  <TextInput
-    mode="outlined"
-    keyboardType="numeric"
-    textColor="black"
-    label={label}
-    value={value}
-    onChangeText={onChange}
-    style={styles.box}
-  />
+const CustomInput = React.forwardRef(
+  ({ label, value, onChange, onSubmitEditing, returnKeyType }, ref) => (
+    <TextInput
+      mode="outlined"
+      keyboardType="numeric"
+      textColor="black"
+      label={label}
+      value={value}
+      onChangeText={onChange}
+      ref={ref}
+      onSubmitEditing={onSubmitEditing}
+      returnKeyType={returnKeyType}
+      style={styles.box}
+    />
+  )
 );
 
 const styles = StyleSheet.create({
@@ -177,11 +244,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "red",
     marginVertical: 5,
-    borderWidth: 0.5,
-    borderColor: "gray",
-    padding: 20,
-    borderRadius: 10,
-    backgroundColor: "white",
+    borderWidth: 2,
+    padding: 10,
+    fontWeight: "bold",
+    borderColor: "green",
   },
 });
 
