@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
-import { TextInput, Divider } from "react-native-paper";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Button,
+} from "react-native";
+import { Divider } from "react-native-paper";
+import CustomInput from "../components/CustomInput";
 
 export default function CashInHand() {
   const denominationImages = {
@@ -26,17 +34,11 @@ export default function CashInHand() {
 
   // Function to handle input changes
   const handleInputChange = (value, denomination) => {
-    // Ensure that only numbers are allowed
-    const parsedValue = parseInt(value) || 0;
-    setDenominations({
-      ...denominations,
+    const parsedValue = parseInt(value) || 0; // Handle NaN and empty strings
+    setDenominations((prev) => ({
+      ...prev,
       [denomination]: parsedValue,
-    });
-  };
-
-  // Format number with commas
-  const formatNumber = (num) => {
-    return num.toLocaleString();
+    }));
   };
 
   // Calculate total for all denominations
@@ -44,12 +46,20 @@ export default function CashInHand() {
     const total = Object.keys(denominations).reduce((sum, denomination) => {
       return sum + denomination * denominations[denomination];
     }, 0);
-    return formatNumber(total);
+    return total.toLocaleString();
   };
 
-  // Calculate total for each denomination
-  const calculateDenominationTotal = (denomination) => {
-    return formatNumber(denomination * denominations[denomination]);
+  // Function to reset input values
+  const handleReset = () => {
+    setDenominations({
+      10: "",
+      20: "",
+      1000: "",
+      500: "",
+      200: "",
+      100: "",
+      50: "",
+    });
   };
 
   return (
@@ -74,31 +84,36 @@ export default function CashInHand() {
                 source={denominationImages[denom]}
                 style={styles.noteImage}
               />
-              <TextInput
-                mode="outlined"
-                keyboardType="numeric"
-                textColor="black"
-                style={styles.input}
-                label={denom}
-                onChangeText={(value) => handleInputChange(value, denom)}
-                value={denominations[denom].toString()}
-              />
+              <View style={{ flex: 1, marginLeft: 2 }}>
+                <CustomInput
+                  label={denom}
+                  keyboardType="numeric"
+                  onChangeText={(value) => handleInputChange(value, denom)}
+                  value={denominations[denom].toString()}
+                />
+              </View>
               <Text style={styles.denomTotal}>
-                {calculateDenominationTotal(denom)}
+                {(denom * denominations[denom]).toLocaleString()}
               </Text>
             </View>
           ))}
       </View>
 
-      {/* Total Footer */}
       <Divider style={styles.divider} />
+
+      {/* Reset Button */}
+      <View style={styles.buttonContainer}>
+        <View style={{ width: "40%" }}>
+          <Button title="Reset" onPress={handleReset} color="#6200ea" />
+        </View>
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 5,
+    padding: 2,
     backgroundColor: "#f7f7f7",
   },
   total: {
@@ -106,11 +121,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     color: "#6200ea",
-    marginBottom: 10,
+    marginBottom: 8,
   },
   table: {
     borderWidth: 1,
-    borderColor: "#e0e0e0",
+    borderColor: "transparent",
     borderRadius: 8,
   },
   tableHeader: {
@@ -131,16 +146,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 7,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
-  },
-  input: {
-    flex: 1,
-    textAlign: "center",
-    marginHorizontal: 5,
-    fontSize: 20,
-    backgroundColor: "white",
   },
   denomTotal: {
     flex: 1,
@@ -156,5 +164,9 @@ const styles = StyleSheet.create({
     height: 50,
     flex: 1,
     resizeMode: "contain",
+  },
+  buttonContainer: {
+    marginTop: 10,
+    alignItems: "center",
   },
 });

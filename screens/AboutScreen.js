@@ -18,6 +18,7 @@ const About = () => (
             fontSize: 18,
             fontWeight: "bold",
             marginBottom: 20,
+            fontStyle: "italic",
           }}
         >
           Courtesy of

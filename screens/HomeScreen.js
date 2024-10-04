@@ -1,10 +1,26 @@
 import React, { useState, useRef } from "react";
 import { View, Alert, Linking, StyleSheet, ScrollView } from "react-native";
-import { Button, TextInput, Text } from "react-native-paper";
+import { Button, TextInput, Text, DefaultTheme } from "react-native-paper";
 import SelectDso from "../components/SelectDso";
 import SelectDate from "../components/SelectDate";
 
+const inputFields = [
+  { name: "lifting", label: "Lifting" },
+  { name: "cashLifting", label: "Cash Lifting" },
+  { name: "bank", label: "Bank" },
+  { name: "crm", label: "CRM" },
+  { name: "cash", label: "Cash" },
+  { name: "preDue", label: "Pre Due" },
+  { name: "cashSupport", label: "Cash Support" },
+  { name: "returnVal", label: "Return" },
+];
+
 const Home = () => {
+  const CustomTheme = {
+    ...DefaultTheme,
+    colors: { ...DefaultTheme.colors, primary: "red" },
+  };
+
   const [inputs, setInputs] = useState({
     lifting: "",
     cashLifting: "",
@@ -20,15 +36,12 @@ const Home = () => {
   });
 
   // Create refs for each input
-  const liftingRef = useRef();
-  const cashLiftingRef = useRef();
-  const bankRef = useRef();
-  const crmRef = useRef();
-  const cashRef = useRef();
-  const preDueRef = useRef();
-  const cashSupportRef = useRef();
-  const returnValRef = useRef();
-  const noteRef = useRef();
+  const inputRefs = useRef(
+    inputFields.reduce((acc, field) => {
+      acc[field.name] = React.createRef();
+      return acc;
+    }, {})
+  );
 
   const handleInputChange = (name, value) => {
     setInputs((prev) => ({ ...prev, [name]: value }));
@@ -74,13 +87,11 @@ const Home = () => {
       inputs.cashLifting
     }*\nTotal Lifting:- *${+inputs.lifting + +inputs.cashLifting}*\nBank:- *${
       inputs.bank
-    }*\nCRM:- *${inputs.crm}*\nCash:- *${inputs.cash}*\nPre_Due:- *${
-      inputs.preDue
-    }*\nCash Support:- *${inputs.cashSupport}*\nReturn:- *${
-      inputs.returnVal
-    }*\n${calculateTotal() > 50 ? "Due" : "Adv"}:*${calculateTotal()}*\nNB:- *${
-      inputs.note
-    }*`;
+    }*\nCRM:- *${inputs.crm}*\nPre_Due:- *${inputs.preDue}*\nCash Support:- *${
+      inputs.cashSupport
+    }*\nCash:- *${inputs.cash}*\nReturn:- *${inputs.returnVal}*\n${
+      total > 50 ? "Due" : "Adv"
+    }:*${Math.abs(total)}*\nNB:- *${inputs.note}*`;
 
     Alert.alert(
       total < 0 ? "টাকা বেশি আছে!!" : total > 0 ? "টাকা কম আছে!!" : "ধন্যবাদ",
@@ -114,81 +125,39 @@ const Home = () => {
       <SelectDso getDso={(dso) => handleInputChange("dso", dso)} />
 
       <View style={styles.inputContainer}>
-        <CustomInput
-          ref={liftingRef}
-          label="Lifting"
-          value={inputs.lifting}
-          onChange={(value) => handleInputChange("lifting", value)}
-          onSubmitEditing={() => cashLiftingRef.current.focus()}
-          returnKeyType="next"
-        />
-        <CustomInput
-          ref={cashLiftingRef}
-          label="Cash Lifting"
-          value={inputs.cashLifting}
-          onChange={(value) => handleInputChange("cashLifting", value)}
-          onSubmitEditing={() => bankRef.current.focus()}
-          returnKeyType="next"
-        />
-        <CustomInput
-          ref={bankRef}
-          label="Bank"
-          value={inputs.bank}
-          onChange={(value) => handleInputChange("bank", value)}
-          onSubmitEditing={() => crmRef.current.focus()}
-          returnKeyType="next"
-        />
-        <CustomInput
-          ref={crmRef}
-          label="CRM"
-          value={inputs.crm}
-          onChange={(value) => handleInputChange("crm", value)}
-          onSubmitEditing={() => cashRef.current.focus()}
-          returnKeyType="next"
-        />
-        <CustomInput
-          ref={cashRef}
-          label="Cash"
-          value={inputs.cash}
-          onChange={(value) => handleInputChange("cash", value)}
-          onSubmitEditing={() => preDueRef.current.focus()}
-          returnKeyType="next"
-        />
-        <CustomInput
-          ref={preDueRef}
-          label="Pre Due"
-          value={inputs.preDue}
-          onChange={(value) => handleInputChange("preDue", value)}
-          onSubmitEditing={() => cashSupportRef.current.focus()}
-          returnKeyType="next"
-        />
-        <CustomInput
-          ref={cashSupportRef}
-          label="Cash Support"
-          value={inputs.cashSupport}
-          onChange={(value) => handleInputChange("cashSupport", value)}
-          onSubmitEditing={() => returnValRef.current.focus()}
-          returnKeyType="next"
-        />
-        <CustomInput
-          ref={returnValRef}
-          label="Return"
-          value={inputs.returnVal}
-          onChange={(value) => handleInputChange("returnVal", value)}
-          onSubmitEditing={() => noteRef.current.focus()}
-          returnKeyType="next"
-        />
+        {inputFields.map(({ name, label }) => (
+          <CustomInput
+            key={name}
+            ref={inputRefs.current[name]}
+            label={label}
+            value={inputs[name]}
+            onChange={(value) => handleInputChange(name, value)}
+            onSubmitEditing={() => {
+              const nextInput = Object.keys(inputRefs.current).find(
+                (key, index) => {
+                  return (
+                    index === Object.keys(inputRefs.current).indexOf(name) + 1
+                  );
+                }
+              );
+              if (nextInput) {
+                inputRefs.current[nextInput].current.focus();
+              }
+            }}
+            returnKeyType="next"
+          />
+        ))}
       </View>
 
       <TextInput
-        ref={noteRef}
+        ref={inputRefs.current.note}
         mode="outlined"
         label="Note"
         textColor="black"
         value={inputs.note}
         onChangeText={(value) => handleInputChange("note", value)}
         returnKeyType="done"
-        style={{ marginVertical: 8, backgroundColor: "white" }}
+        style={styles.noteInput}
       />
       <Text variant="headlineSmall" style={styles.resultText}>
         {total > 0
@@ -200,15 +169,10 @@ const Home = () => {
 
       <Button
         mode="contained"
-        style={{
-          backgroundColor: "orange",
-          color: "red",
-          paddingVertical: 5,
-          marginTop: 5,
-        }}
+        style={styles.submitButton}
         onPress={handleCalculate}
         icon={"send"}
-      ></Button>
+      />
     </ScrollView>
   );
 };
@@ -235,19 +199,25 @@ const styles = StyleSheet.create({
   headerText: {
     textAlign: "center",
     marginBottom: 10,
-    color: "orangered",
     fontWeight: "bold",
   },
   inputContainer: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   box: { width: "48%", backgroundColor: "white" },
+  noteInput: { marginVertical: 8, backgroundColor: "white" },
   resultText: {
     textAlign: "center",
-    color: "red",
     marginVertical: 5,
     borderWidth: 2,
     padding: 10,
     fontWeight: "bold",
-    borderColor: "green",
+    borderColor: "#DBDFEA",
+    borderRadius: 20,
+  },
+  submitButton: {
+    backgroundColor: "#6200ea",
+    color: "red",
+    paddingVertical: 5,
+    marginTop: 5,
   },
 });
 

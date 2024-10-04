@@ -80,7 +80,6 @@ const BankDataList = () => {
       accountsTitle:
         "Bangladesh Post Office Nagad MFS Trust Cum Settlement Account",
     },
-
     {
       bankName: "Dhaka Bank Limited",
       branchName: "Banani, Kemal Ataturk Avenue, Dhaka",
@@ -95,7 +94,6 @@ const BankDataList = () => {
       accountsTitle:
         "Bangladesh Post Office Nagad MFS Trust Cum Settlement Account",
     },
-
     {
       bankName: "Midland Bank Limited",
       branchName: "Gulshan North Avenue, Dhaka",
@@ -110,7 +108,6 @@ const BankDataList = () => {
       accountsTitle:
         "Bangladesh Post Office Nagad MFS Trust Cum Settlement Account",
     },
-
     {
       bankName: "Sonali Bank Limited",
       branchName: "Banani, Kemal Ataturk Avenue, Dhaka",
@@ -118,7 +115,6 @@ const BankDataList = () => {
       accountsTitle:
         "Bangladesh Post Office Nagad MFS Trust Cum Settlement Account",
     },
-
     {
       bankName: "The City Bank Ltd.",
       branchName: "Pragati Sarani Branch, Dhaka",
@@ -147,7 +143,6 @@ const BankDataList = () => {
       accountsTitle:
         "Bangladesh Post Office Nagad MFS Trust Cum Settlement Account",
     },
-
     {
       bankName: "Meghna Bank Ltd",
       branchName: "Banani",
@@ -182,18 +177,14 @@ const BankDataList = () => {
             index % 2 !== 0 && styles.oddBackground,
           ]}
         >
-          <Text style={styles.text}>
-            <Text style={styles.label}>Bank Name:</Text> {item.bankName}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.label}>Branch Name:</Text> {item.branchName}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.label}>Account Number:</Text>{" "}
+          <Text style={styles.bankName}>{item.bankName}</Text>
+          <Text style={styles.branchName}>{item.branchName}</Text>
+          <Text style={styles.accountDetails}>
+            <Text style={styles.label}>Account Number: </Text>
             {item.accountNumber}
           </Text>
-          <Text style={styles.text}>
-            <Text style={styles.label}>Accounts Title:</Text>{" "}
+          <Text style={styles.accountDetails}>
+            <Text style={styles.label}>Accounts Title: </Text>
             {item.accountsTitle}
           </Text>
         </View>
@@ -206,20 +197,35 @@ export default BankDataList;
 
 const styles = StyleSheet.create({
   itemContainer: {
-    padding: 10,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "gray",
+    padding: 15,
+    marginVertical: 5,
+    borderRadius: 8,
+    backgroundColor: "#FFA500", // Vibrant orange
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 2, // For Android shadow
   },
-  text: {
-    fontSize: 18,
+  bankName: {
+    fontSize: 20,
+    fontWeight: "bold",
     marginBottom: 5,
+  },
+  branchName: {
+    fontSize: 16,
+    fontStyle: "italic",
+    marginBottom: 10,
+  },
+  accountDetails: {
+    fontSize: 16,
+    marginBottom: 5,
+    textAlign: "justify",
   },
   label: {
     fontWeight: "bold",
   },
   oddBackground: {
-    backgroundColor: "#D2E0FB",
-    color: "red",
+    backgroundColor: "#20B2AA", // Soft teal
   },
 });
