@@ -4,10 +4,12 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Suspense, lazy } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ActivityIndicator, Text } from "react-native";
 
-// Lazy loading screens
-const HomeScreen = lazy(() => import("./screens/HomeScreen"));
+// Direct import for HomeScreen (no lazy loading)
+import HomeScreen from "./screens/HomeScreen";
+
+// Lazy loading for other screens
 const AboutScreen = lazy(() => import("./screens/AboutScreen"));
 const BankListScreen = lazy(() => import("./screens/BankListScreen"));
 const DenoteScreen = lazy(() => import("./screens/DenoteScreen"));
@@ -46,6 +48,30 @@ const CustomTheme = {
 // Create Drawer Navigator
 const Drawer = createDrawerNavigator();
 
+// Error Boundary Component
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <Text>Something went wrong.</Text>;
+    }
+
+    return this.props.children;
+  }
+}
+
 function MyDrawer() {
   return (
     <Drawer.Navigator
@@ -56,7 +82,10 @@ function MyDrawer() {
         },
       }}
     >
+      {/* Direct import for HomeScreen (no lazy loading) */}
       <Drawer.Screen name="Home" component={HomeScreen} />
+
+      {/* Lazy loaded screens */}
       <Drawer.Screen name="Denote" component={DenoteScreen} />
       <Drawer.Screen name="Mention" component={BankMensionScreen} />
       <Drawer.Screen name="Bank List" component={BankListScreen} />
@@ -70,9 +99,11 @@ export default function App() {
     <PaperProvider theme={CustomTheme}>
       <GestureHandlerRootView style={styles.gestureContainer}>
         <NavigationContainer>
-          <Suspense fallback={<LoadingSpinner />}>
-            <MyDrawer />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<LoadingSpinner />}>
+              <MyDrawer />
+            </Suspense>
+          </ErrorBoundary>
         </NavigationContainer>
       </GestureHandlerRootView>
     </PaperProvider>
